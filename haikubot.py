@@ -1,4 +1,3 @@
-from dis import dis
 import os
 import discord
 from dotenv import load_dotenv
@@ -15,6 +14,7 @@ client = discord.Client()
 
 def count_syllables(message):
     total_count = 0
+    syllables = []
     for word in message.split():
         word = word.lower()
         count = 0
@@ -29,7 +29,21 @@ def count_syllables(message):
         if count == 0:
             count += 1
         total_count += count
-    return total_count
+        syllables.append((word, count))
+    print(syllables)
+    sections = [ []for i in range(3) ]
+    temp = 0
+    for i in syllables:
+        temp += i[1]
+        if temp <= 6:
+            sections[0].append(f"{i[0]} ")
+        elif temp <= 14:
+            sections[1].append(f"{i[0]} ")
+        elif temp <= 19:
+            sections[2].append(f"{i[0]} ")
+    for i in sections:
+         print(f"{''.join([b for b in i])}\n")
+    return total_count, sections
 
 
 
@@ -54,9 +68,9 @@ async def on_message(message):
 
     new_message = re.sub(r"[^a-zA-Z0-9 ]", "", message.content)
 
-    if 19 >= count_syllables(new_message) >= 14:
+    if 19 >= count_syllables(new_message)[0] >= 14:
         await message.reply(f"""
-        {message.content}\n haiku detected from @{message.author}.\n
+        {''.join([i for i in count_syllables(new_message)[1]])}\n haiku detected from @{message.author}.\n
         --HaikuBot(Sometimes I make mistakes)
         
         """, mention_author=True)    
