@@ -31,7 +31,7 @@ def count_syllables(message):
         total_count += count
         syllables.append((word, count))
     print(syllables)
-    sections = [ []for i in range(3) ]
+    sections = [[], [], []]
     temp = 0
     for i in syllables:
         temp += i[1]
@@ -69,8 +69,11 @@ async def on_message(message):
     new_message = re.sub(r"[^a-zA-Z0-9 ]", "", message.content)
 
     if 19 >= count_syllables(new_message)[0] >= 14:
+        haiku = ""
+        for i in count_syllables(new_message)[1]:
+            haiku += f"{''.join([b for b in i])}\n"
         await message.reply(f"""
-        {''.join([i for i in count_syllables(new_message)[1]])}\n haiku detected from @{message.author}.\n
+        {haiku}\n haiku detected from @{message.author}.\n
         --HaikuBot(Sometimes I make mistakes)
         
         """, mention_author=True)    
