@@ -2,12 +2,12 @@ import os
 import discord
 from dotenv import load_dotenv
 import re
-
+from discord.ext import commands
 
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
 
-
+os.system("cd && python3 /haikubot/register.py")
 
 client = discord.Client()
 
@@ -61,23 +61,33 @@ async def on_ready():
     )
 
 
+
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
 
-    new_message = re.sub(r"[^a-zA-Z0-9 ]", "", message.content)
+    new_message = re.sub(r"[^a-zA-Z ]", "", message.content)
 
-    if 19 >= count_syllables(new_message)[0] >= 14:
-        haiku = ""
-        for i in count_syllables(new_message)[1]:
-            haiku += f"{''.join([b for b in i])}\n"
-        await message.reply(f"""
-        {haiku}\n haiku detected from @{message.author}.\n
-        --HaikuBot(Sometimes I make mistakes)
-        
-        """, mention_author=True)    
+    curr_channel = message.channel.id
     
+    temp = str(os.getenv("REGISTERED_CHANNELS"))
+    registered_channels = temp.split(" ")
+
+    if str(curr_channel) in registered_channels:
+        print("allowed")
+        if 19 >= count_syllables(new_message)[0] >= 15 and len(count_syllables(new_message)[1]) > 2:
+            haiku = ""
+            for i in count_syllables(new_message)[1]:
+                haiku += f"{''.join([b for b in i])}\n"
+            await message.reply(f"""
+            {haiku}\n haiku detected from @{message.author}.\n
+            --HaikuBot(Sometimes I make mistakes)
+            
+            """, mention_author=True)    
+    else:
+        print("not allowed")
 
 
 
