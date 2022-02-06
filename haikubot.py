@@ -7,7 +7,6 @@ from discord.ext import commands
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
 
-os.system("cd && python3 /haikubot/register.py")
 
 client = discord.Client()
 
@@ -72,8 +71,8 @@ async def on_message(message):
 
     curr_channel = message.channel.id
     
-    temp = str(os.getenv("REGISTERED_CHANNELS"))
-    registered_channels = temp.split(" ")
+    with open("/usr/bin/channels.txt", "r") as f:
+        registered_channels = f.read().split("~")
 
     if str(curr_channel) in registered_channels:
         print("allowed")
